@@ -1,0 +1,47 @@
+import asyncio
+import random
+
+from hikkatl import types
+from telethon import functions, events
+
+from .. import loader, utils
+
+
+@loader.tds
+class ClickOnModule(loader.Module):
+    """Модуль для автоматического клика на боте"""
+
+    strings = {"name": "ClickOn"}
+
+    def __init__(self):
+        self.running_click = False
+        self.success_on_message = "<b>👆 Клик включен<b>"
+        self.already_running_message = "❌️Клик уже включен"
+        self.success_off_message = "<b>👇 Клик выключен<b>"
+        self.not_running_message = "❌️Клик уже выключен"
+
+    @loader.unrestricted
+    async def clickoncmd(self, message: types.Message):
+        """Включает автоматический клик"""
+        if self.running_click:
+            await utils.answer(message, self.already_running_message)
+            return
+        self.running_click = True
+
+        await utils.answer(message, self.success_on_message)
+
+        while self.running_click:
+            await message.client(functions.messages.SendMessageRequest(
+                peer='@LunarCoinbot',
+                message='🌙 Клик'
+            ))
+            await asyncio.sleep(0.8)
+
+    @loader.unrestricted
+    async def clickoffcmd(self, message: types.Message):
+        """Выключает автоматический клик"""
+        if not self.running_click:
+            await utils.answer(message, self.not_running_message)
+            return
+        self.running_click = False
+        await utils.answer(message, self.success_off_message)
