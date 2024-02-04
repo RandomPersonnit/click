@@ -35,7 +35,7 @@ class ClickOnModule(loader.Module):
                 peer='@LunarCoinbot',
                 message='🌙 Клик'
             ))
-            await asyncio.sleep(0.8)
+            await asyncio.sleep(0.5)
 
     @loader.unrestricted
     async def clickoffcmd(self, message: types.Message):
